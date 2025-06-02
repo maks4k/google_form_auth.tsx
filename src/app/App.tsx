@@ -1,9 +1,16 @@
-import { Button } from "@/components/ui/button";
+import { api } from "@/shared/api/axios-instance";
+import { Button } from "@/shared/ui/button";
+
+
+
 
 
 
 
 export function App() {
-  return (<Button size={"lg"}  className="text-blue-50">button</Button>)
+
+api.get("/").then((responce)=>console.log(responce)
+  )
+  return (<Button size={"lg"} variant="blue">burron</Button>)
 }
 
