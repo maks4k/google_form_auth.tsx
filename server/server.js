@@ -13,3 +13,11 @@ app.get("/",(req,resp)=>{
 app.listen(4000,()=>{
     console.log("server open")
 });//указываем на каком порте будет работать сервер
+
+app.post("/signin",(req,resp)=>{
+    console.log(req.body);
+    
+    resp.status(200).json("signin sucsecc"
+
+    )
+})
