@@ -10,9 +10,9 @@ interface IUserRequest extends Pick<IUser,'email'|'password'>{
 
 export const authApi={
 signin:(data:IUserRequest)=>
-api.post<IUserRequest>(ROUTES.SIGNIN,data),
+api.post<{message:string}>(ROUTES.SIGNIN,data),
 signup:(data:IUserRequest)=>{
-api.post<IUserRequest>(ROUTES.SIGNUP,data)
+api.post<{message:string}>(ROUTES.SIGNUP,data)
 }
 }
 
