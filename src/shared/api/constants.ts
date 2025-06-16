@@ -1,4 +1,4 @@
 export const ROUTES = {
   SIGNIN: "signin",
-  SIGNUP: "singup",
+  SIGNUP: "signup",
 } as const; //роуты для fetch

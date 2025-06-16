@@ -1,5 +1,5 @@
 export const ROUTES={
     HOME:'/',
     SIGNIN:'/signin',
-    SIGNUP:'/singup'
+    SIGNUP:'/signup'
 }as const;//роуты для страниц
