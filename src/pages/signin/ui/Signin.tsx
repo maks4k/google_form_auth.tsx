@@ -1,4 +1,5 @@
 import { authApi } from "@/entites/user/api/auth";
+import { SigninForm } from "@/features/auth";
 // import { Button } from "@/shared/ui/button";
 import { AxiosError } from "axios";
 
@@ -14,9 +15,12 @@ export const Signin = () => {
       console.log(error.response?.data.error);
     });
   return (
-    <h1>Signin page</h1>
-    // <Button size={"lg"} variant="blue">
+    <>
+    <SigninForm/>
+   <span>&copy;all rights res</span>
+    {/* // <Button size={"lg"} variant="blue">
     //   burron
-    // </Button>
+    // </Button> */}
+    </>
   )
 }
