@@ -15,6 +15,7 @@ import { Eye, EyeOff } from "lucide-react";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { FormLayout } from "./layouts/FormLayout";
 
 const emailMin = 6;
 const passwordMin = 4;
@@ -41,70 +42,11 @@ const FormSchema = z.object({
 });
 
 export const SignupForm = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    mode: "onChange",
-  });
-
-  const onSubmit = () => {
-    console.log("Sumbit");
+  const SingUpHandler = () => {
+    console.log("SingUpHandler");
   };
 
-  return (
-    <div>
-      <label htmlFor=""></label>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-6 mt-5"
-        >
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input placeholder="Email" {...field} className="relative" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <Input
-                      placeholder="Password"
-                      {...field}
-                      type={showPassword ? "password" : "text"}
-                    />
-                    <button
-                      type="button"
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                      onClick={() => setShowPassword((prev) => !prev)}
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-3 w-3 text-gray-500" />
-                      ) : (
-                        <Eye className="h-3 w-3 text-gray-500" />
-                      )}
-                    </button>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button className="cursor-pointer border border-zinc-50" type="submit">Sing Up</Button>
-        </form>
-      </Form>
-    </div>
-  );
-};
+
+
+  return <FormLayout ButtonTitle="Sign Up" onSubmit={SingUpHandler} confirmField={true}/>
+}
