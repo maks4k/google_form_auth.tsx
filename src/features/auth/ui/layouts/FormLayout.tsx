@@ -15,74 +15,43 @@ import { Eye, EyeOff } from "lucide-react";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Link } from "react-router-dom";
 
-const emailMin = 6;
-const passwordMin = 4;
-const passwordMax = 20;
 
-const FormSchema = z
-  .object({
-    email: z
-      .string()
-      .email()
-      .min(emailMin, `Email must be at least ${emailMin} characters.`),
-    password: z
-      .string()
-      .min(
-        passwordMin,
-        `Password must not be less than ${passwordMin} characters.`,
-      )
-      .max(
-        passwordMax,
-        `Password must not be more than ${passwordMax} characters.`,
-      )
-      .regex(/[A-Z]/, "Password must contain capital characters.")
-      .regex(/[a-z]/, "Password must contain small characters.")
-      .regex(/[0-9]/, "Password must contain numeric characters."),
-
-    confirmPassword: z
-      .string()
-      .min(
-        passwordMin,
-        `Password must not be less than ${passwordMin} characters.`,
-      )
-      .max(
-        passwordMax,
-        `Password must not be more than ${passwordMax} characters.`,
-      )
-      .regex(/[A-Z]/, "Password must contain capital characters.")
-      .regex(/[a-z]/, "Password must contain small characters.")
-      .regex(/[0-9]/, "Password must contain numeric characters.")
-      .optional(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
 
 interface FormLayoutProps {
   ButtonTitle: string;
   onSubmit: (data: FormData) => void;
   confirmField?: boolean;
+  link: {
+    to: string;
+    title: string;
+  };
+  schema:z.ZodSchema<any>
 }
 
-type FormData = z.infer<typeof FormSchema>;
+
 
 export const FormLayout = ({
   ButtonTitle,
   onSubmit,
   confirmField,
+  link,
+  schema,
 }: FormLayoutProps) => {
- 
+
   const form = useForm<FormData>({
-    resolver: zodResolver(FormSchema),
+    resolver: zodResolver(schema),
     mode: "onChange",
   });
-  const {watch,formState:{errors}}=form;
-   const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const {
+    watch,
+    formState: { errors },
+  } = form;
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-const isPasswordValid=!errors.password&&watch("password");
+  const isPasswordValid = !errors.password && watch("password");
 
   return (
     <div>
@@ -129,9 +98,11 @@ const isPasswordValid=!errors.password&&watch("password");
                     <button
                       type="button"
                       className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Переключаем видимость пароля
+                      onClick={() =>
+                       setShowPassword(!showPassword)
+                      } // Переключаем видимость пароля
                     >
-                      {showConfirmPassword ? (
+                      {showPassword ? (
                         <EyeOff className="h-3 w-3 text-gray-500" /> // Иконка "глаз закрыт"
                       ) : (
                         <Eye className="h-3 w-3 text-gray-500" /> // Иконка "глаз открыт"
@@ -164,9 +135,9 @@ const isPasswordValid=!errors.password&&watch("password");
                       <button
                         type="button"
                         className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                        onClick={() => setShowPassword(!showPassword)} // Переключаем видимость пароля
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Переключаем видимость пароля
                       >
-                        {showPassword ? (
+                        {showConfirmPassword ? (
                           <EyeOff className="h-3 w-3 text-gray-500" /> // Иконка "глаз закрыт"
                         ) : (
                           <Eye className="h-3 w-3 text-gray-500" /> // Иконка "глаз открыт"
@@ -187,6 +158,9 @@ const isPasswordValid=!errors.password&&watch("password");
             {ButtonTitle}
           </Button>
         </form>
+        <Button variant={"link"}  className="text-blue-600 mx-auto block">
+          <Link to={link.to}>{link.title}</Link>
+        </Button>
       </Form>
     </div>
   );

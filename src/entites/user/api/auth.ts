@@ -12,7 +12,7 @@ export const authApi={
 signin:(data:IUserRequest)=>
 api.post<{message:string}>(ROUTES.SIGNIN,data),
 signup:(data:IUserRequest)=>{
-api.post<{message:string}>(ROUTES.SIGNUP,data)
+return api.post<{message:string}>(ROUTES.SIGNUP,data)
 }
 }
 

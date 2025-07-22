@@ -16,38 +16,22 @@ import { Eye, EyeOff } from "lucide-react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormLayout } from "./layouts/FormLayout";
+import { ROUTES } from "@/shared/router/constants";
+import {signinFormSchema } from "../model/useSignin";
+// import { useSignin } from "../model/useSignin";
 
-const emailMin = 6;
-const passwordMin = 4;
-const passwordMax = 20;
-
-const FormSchema = z.object({
-  email: z
-    .string()
-    .email()
-    .min(emailMin, `Email must be at least ${emailMin} characters.`),
-  password: z
-    .string()
-    .min(
-      passwordMin,
-      `Password must not be less than ${passwordMin} characters.`,
-    )
-    .max(
-      passwordMax,
-      `Password must not be more than ${passwordMax} characters.`,
-    )
-    .regex(/[A-Z]/, "Password must contain capital characters.")
-    .regex(/[a-z]/, "Password must contain lewercase characters.")
-    .regex(/[0-9]/, "Password must contain numeric characters."),
-});
 
 export const SigninForm = () => {
+
 
   const SignInHandler = (data:FormData) => {
     console.log("SingInHandler");
   };
 
   return (
-   <FormLayout ButtonTitle="Sign In" onSubmit={SignInHandler}/>
-  );
-};
+   <FormLayout ButtonTitle="Sign In"
+    onSubmit={SignInHandler}
+     link={{to:ROUTES.SIGNUP,title:"Sing up"}
+      schema={signinFormSchema}}/>
+);
+}
