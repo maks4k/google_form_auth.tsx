@@ -1,58 +1,34 @@
-import { authApi } from "@/entites/user/api/auth";
+
 import type { AxiosError } from "axios";
-import { z } from "zod";
+import type { signUpFormSchema } from "./formSchema";
+import type { z } from "zod";
+import { authApi } from "@/entites/user";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/shared/router/constants";
+import { toast } from "sonner";
 
-const formSchemaConst={
- emailMin:6,
-  passwordMin:4,
-  passwordMax:20,
 
-}
-export const signUpFormSchema = z
-  .object({
-    email: z
-      .string()
-      .email()
-      .min(formSchemaConst.emailMin, `Email must be at least ${formSchemaConst.emailMin} characters.`),
-    password: z
-      .string()
-      .min(
-       formSchemaConst.passwordMin,
-        `Password must not be less than ${formSchemaConst.passwordMin} characters.`,
-      )
-      .max(
-       formSchemaConst.passwordMax,
-        `Password must not be more than ${formSchemaConst.passwordMax} characters.`,
-      )
-      .regex(/[A-Z]/, "Password must contain capital characters.")
-      .regex(/[a-z]/, "Password must contain small characters.")
-      .regex(/[0-9]/, "Password must contain numeric characters."),
 
-    confirmPassword: z
-      .string()
-      .min(
-       formSchemaConst.passwordMin,
-        `Password must not be less than ${formSchemaConst.passwordMin} characters.`,
-      )
-      .max(
-        formSchemaConst.passwordMax,
-        `Password must not be more than ${formSchemaConst.passwordMax} characters.`,
-      )
-      .regex(/[A-Z]/, "Password must contain capital characters.")
-      .regex(/[a-z]/, "Password must contain small characters.")
-      .regex(/[0-9]/, "Password must contain numeric characters.")
-      .optional(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
-export type SignupFormData = z.infer<typeof FormSchema>;
+
 export const useSignup = () => {
-  authApi
-    .signup({ email: "admin@mail.ru", password: "1234" })
-    .then((resp) => console.log(resp.data.message))
-    .catch((error: AxiosError<{ error: string }>) => {
-      console.log(error.response?.data.error);
-    });
+  const navigate=useNavigate()
+    const SingUpHandler = async(data: z.infer< typeof signUpFormSchema>) => {
+      try {
+        throw new Error();
+        
+        await  authApi
+     .signup(data)
+     navigate(ROUTES.HOME)
+      } catch (error) {
+      toast.error("Event has been created.")
+      }
+//  authApi
+//     .signup({ email: "admin@mail.ru", password: "1234" })
+//     .then((resp) => console.log(resp.data.message))
+//     .catch((error: AxiosError<{ error: string }>) => {
+//       console.log(error.response?.data.error);
+//     });
+        console.log("signuphandler");
+  };
+ return {SingUpHandler}
 };

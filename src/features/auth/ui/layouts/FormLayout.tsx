@@ -16,18 +16,20 @@ import { Eye, EyeOff } from "lucide-react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
+import type { signinFormSchema, signUpFormSchema } from "../../model/formSchema";
+import { Toaster } from "sonner";
 
 
 
 interface FormLayoutProps {
   ButtonTitle: string;
-  onSubmit: (data: FormData) => void;
+  onSubmit: (data:z.infer<typeof signinFormSchema>|z.infer<typeof signUpFormSchema>) =>Promise< void>;
   confirmField?: boolean;
   link: {
     to: string;
     title: string;
   };
-  schema:z.ZodSchema<any>
+  schema:typeof signinFormSchema|typeof signUpFormSchema;
 }
 
 
@@ -39,10 +41,14 @@ export const FormLayout = ({
   link,
   schema,
 }: FormLayoutProps) => {
-
-  const form = useForm<FormData>({
+  const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     mode: "onChange",
+    defaultValues:{
+      email:"",
+      password:"",
+    ...(confirmField?{confirmPassword:""}:{}),
+    },
   });
   const {
     watch,
@@ -56,6 +62,7 @@ export const FormLayout = ({
   return (
     <div>
       <Form {...form}>
+         <Toaster />
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mb-5">
           <FormField
             control={form.control}

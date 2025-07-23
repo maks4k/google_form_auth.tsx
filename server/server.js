@@ -22,7 +22,7 @@ app.post("/signin", (req, resp) => {
   }
   const { email, password } = req.body; //сначала дестроктуризация потом find
   const users = [
-    { email: "admin@mail.ru", password: "1234" },
+    { email: "admin@mail.ru", password: "1234Dm" },
     { email: "user@mail.ru", password: "1234" },
   ];
 
