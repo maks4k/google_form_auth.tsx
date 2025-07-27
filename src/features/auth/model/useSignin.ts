@@ -11,7 +11,7 @@ export const useSignin = () => {
   const SignInHandler = async (data: z.infer<typeof signinFormSchema>) => {
 
   try {
-    throw new Error()
+    // throw new Error()
     await  authApi.signin(data);
     navigate(ROUTES.HOME)
      console.log("signinhandler");
