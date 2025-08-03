@@ -2,37 +2,41 @@ import { Button } from "@/shared/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+
 import { Eye, EyeOff } from "lucide-react";
 
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+
 import { Link } from "react-router-dom";
-import type { signinFormSchema, signUpFormSchema } from "../../model/formSchema";
+import type {
+  signinFormSchema,
+  signUpFormSchema,
+} from "../../model/formSchema";
 import { Toaster } from "sonner";
+import type {
+  BaseFormLayoutProps,
 
+} from "../../types";
+import { useFormLoyut } from "../../model/useFormLoyut";
+import { Spinner } from "@/shared/ui/spiner";
 
-
-interface FormLayoutProps {
+interface FormLayoutProps extends BaseFormLayoutProps {
   ButtonTitle: string;
-  onSubmit: (data:z.infer<typeof signinFormSchema>|z.infer<typeof signUpFormSchema>) =>Promise< void>;
-  confirmField?: boolean;
+  onSubmit: (
+    data: z.infer<typeof signinFormSchema> | z.infer<typeof signUpFormSchema>,
+  ) => Promise<void>;
+
   link: {
     to: string;
     title: string;
   };
-  schema:typeof signinFormSchema|typeof signUpFormSchema;
 }
-
-
 
 export const FormLayout = ({
   ButtonTitle,
@@ -40,29 +44,24 @@ export const FormLayout = ({
   confirmField,
   link,
   schema,
+  serverValidationErrors,
 }: FormLayoutProps) => {
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-    mode: "onChange",
-    defaultValues:{
-      email:"",
-      password:"",
-    ...(confirmField?{confirmPassword:""}:{}),
-    },
-  });
   const {
-    watch,
-    formState: { errors },
-  } = form;
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  const isPasswordValid = !errors.password && watch("password");
+    form,
+    showPassword,
+    setShowPassword,
+    isPasswordValid,
+    showConfirmPassword,
+    setShowConfirmPassword,
+    isValid,
+    isDirty,
+    isSubmitting
+  } = useFormLoyut({ schema, serverValidationErrors, confirmField });
 
   return (
     <div>
       <Form {...form}>
-         <Toaster />
+        <Toaster />
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mb-5">
           <FormField
             control={form.control}
@@ -105,9 +104,7 @@ export const FormLayout = ({
                     <button
                       type="button"
                       className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                      onClick={() =>
-                       setShowPassword(!showPassword)
-                      } // Переключаем видимость пароля
+                      onClick={() => setShowPassword(!showPassword)} // Переключаем видимость пароля
                     >
                       {showPassword ? (
                         <EyeOff className="h-3 w-3 text-gray-500" /> // Иконка "глаз закрыт"
@@ -142,7 +139,9 @@ export const FormLayout = ({
                       <button
                         type="button"
                         className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Переключаем видимость пароля
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        } // Переключаем видимость пароля
                       >
                         {showConfirmPassword ? (
                           <EyeOff className="h-3 w-3 text-gray-500" /> // Иконка "глаз закрыт"
@@ -161,11 +160,12 @@ export const FormLayout = ({
           <Button
             className="w-full bg-[#2859FE] py-6 cursor-pointer hover:bg-[#1642d3]"
             type="submit"
+            disabled={!isDirty||!isValid||isSubmitting}
           >
-            {ButtonTitle}
+            {isSubmitting?<Spinner/>:ButtonTitle}
           </Button>
         </form>
-        <Button variant={"link"}  className="text-blue-600 mx-auto block">
+        <Button variant={"link"} className="text-blue-600 mx-auto block">
           <Link to={link.to}>{link.title}</Link>
         </Button>
       </Form>

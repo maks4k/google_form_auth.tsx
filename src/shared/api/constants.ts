@@ -1,4 +1,6 @@
+import { RouteNames } from "../types";
+
 export const ROUTES = {
-  SIGNIN: "signin",
-  SIGNUP: "signup",
+  SIGNIN:RouteNames["Signin"],
+  SIGNUP:RouteNames["Signup"],
 } as const; //роуты для fetch

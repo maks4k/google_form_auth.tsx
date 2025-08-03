@@ -1,28 +1,25 @@
 import { api } from "@/shared/api/axios-instance";
 import type { IUser } from "../types";
 import { ROUTES } from "@/shared/api/constants";
-import type { AxiosError, AxiosResponse } from "axios";
 
 
 
 interface IUserRequest extends Pick<IUser,'email'|'password'>{};
-interface IUserResponse{
+interface IUserData{
     id:number;
     email:string;
 }
-interface IUserSignUPResponse{
+interface IUserResponse{
         token:string,
-        user:IUserResponse
+        user:IUserData
 }
-interface IUserSingUpResponseError{
-    error:string
-}
+
 
 export const authApi={
 signin:(data:IUserRequest)=>
-api.post<{message:string}>(ROUTES.SIGNIN,data),
+api.post<IUserResponse>(ROUTES.SIGNIN,data),
 signup:(data:IUserRequest)=>{
-return api.post<IUserSignUPResponse>(ROUTES.SIGNUP,data)
+return api.post<IUserResponse>(ROUTES.SIGNUP,data)
 }
 }
 

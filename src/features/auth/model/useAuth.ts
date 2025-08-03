@@ -1,31 +1,34 @@
-import { AxiosError } from "axios";
-import type { signUpFormSchema } from "./formSchema";
-import { z } from "zod";
-import { authApi } from "@/entites/user";
-import { useNavigate } from "react-router-dom";
-import { ROUTES } from "@/shared/router/constants";
-import { toast } from "sonner";
-import * as Cookies from "js-cookie";
-import type { ValidationFormfieldsTypes } from "../types";
+import type { RouteNames } from "@/shared/types"
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import type { ValidationFormfieldsTypes } from "../types";
+import type { z } from "zod";
+import type { signinFormSchema, signUpFormSchema } from "./formSchema";
+import { authApi } from "@/entites/user";
+import * as Cookies from "js-cookie";
+import { ROUTES } from "@/shared/router/constants";
+import type { AxiosError } from "axios";
+import { toast } from "sonner";
 
-export const useSignup = () => {
+
+export const useAuth = (ROUTES_VALUE:`${RouteNames}`) => {
+  const navigate = useNavigate();
   const [serverValidationErrors, setServerValidationErrors] =
     useState<ValidationFormfieldsTypes | null>(null);
 
-  const navigate = useNavigate();
-  const SingUpHandler = async (data: z.infer<typeof signUpFormSchema>) => {
+  const authHandler = async (data: z.infer<typeof signinFormSchema>| z.infer<typeof signUpFormSchema>) => {
     try {
-      const resp = await authApi.signup(data);
+      const resp = await authApi[ROUTES_VALUE](data);
       if (!resp.data.token) {
         throw new Error("Token not found");
       }
       Cookies.default.set("token", resp.data.token, {
         expires: 1 / 24,
       });
+
       navigate(ROUTES.HOME);
     } catch (err) {
-      const error = err as AxiosError<{
+     const error = err as AxiosError<{
         error: string | ValidationFormfieldsTypes;
       }>;
       if (error.response?.data.error instanceof Object) {
@@ -35,5 +38,7 @@ export const useSignup = () => {
       }
     }
   };
-  return { SingUpHandler, serverValidationErrors };
-};
+  return { authHandler,serverValidationErrors };
+    
+  
+}

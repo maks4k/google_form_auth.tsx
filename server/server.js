@@ -58,45 +58,42 @@ app.get("/", (req, resp) => {
   });
 });
 
-app.post("/signin", (req, resp) => {
-  if (!req.body.email || !req.body.password) {
-    return resp
-      .status(400)
-      .json({ error: "Вы должны передать email и password" });
-  }
-  const { email, password } = req.body; //сначала дестроктуризация потом find
-  const users = [
-    { email: "admin@mail.ru", password: "1234Dm" },
-    { email: "user@mail.ru", password: "1234" },
-  ];
+app.post("/signin", async (req, resp) => {
+  const result = signinFormSchema.safeParse(req.body);
 
-  const user = users.find(
-    (user) => user.email === email && user.password === password,
-  );
-
-  if (user) {
-    resp.status(200).json({ message: "Вы успешно авторизованы" });
-  } else {
-    resp
-      .status(401)
-      .json({ error: "Пользователь не найден или неверно введены данные" });
+  if (!result.success) {
+    return resp.status(400).json({ error: result.error.flatten().fieldErrors });
   }
+  const { email, password } = result.data; //сначала дестроктуризация потом find
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) {
+    return resp.status(401).json({ error: "Email is not correct" });
+  }
+const isValiadPassword = await bcrypt.compare(password, user.password);
+  if (!isValiadPassword) {
+    return resp.status((401).json({ error: "password is not correct" }));
+  }
+  const token = jwt.sign({ id: user.id }, jwtSecret, {
+    expiresIn: "1h",
+  });
+   return resp
+      .status(200)
+      .json({ token, user: { id: user.id, emai: user.email } });
 });
 
-
-
-
-
-
-
-
 app.post("/signup", async (req, resp) => {
+  // req.body = {
+  //   email: "sda@mail.ru",
+  //   password: "124Maks",
+  //   confirmPassword: "124Maks",
+  // };
+
   const result = signUpFormSchema.safeParse(req.body);
 
   if (!result.success) {
     return resp.status(400).json({ error: result.error.flatten().fieldErrors });
   }
-  const { email, password } = req.body;
+  const { email, password } = result.data;
 
   const isUserExist = await prisma.user.findUnique({ where: { email } });
   if (isUserExist) {
@@ -115,10 +112,12 @@ app.post("/signup", async (req, resp) => {
       expiresIn: "1h",
     });
 
-    return resp.status(201).json({ token,user:{id:newUser.id,emai:newUser.email}});
-  }else{
+    return resp
+      .status(201)
+      .json({ token, user: { id: newUser.id, emai: newUser.email } });
+  } else {
     return resp.status(500).json({ error: "Server error" });
-  } 
+  }
 });
 
 app.listen(4000, () => {
