@@ -2,5 +2,6 @@
 
 export enum RouteNames{
     Signin="signin",
-    Signup="signup"
+    Signup="signup",
+    Protected="protected"
 }

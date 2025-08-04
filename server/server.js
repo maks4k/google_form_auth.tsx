@@ -5,6 +5,8 @@ import { z } from "zod";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+
+
 const app = express();
 app.use(express.json()); //для ответов сервера
 app.use(cors({ origin: "http://localhost:5173", credentials: true })); //указываем на каком порте будет принимать запросы ,надо что бы он мечился с клинетским сервером
@@ -82,12 +84,6 @@ const isValiadPassword = await bcrypt.compare(password, user.password);
 });
 
 app.post("/signup", async (req, resp) => {
-  // req.body = {
-  //   email: "sda@mail.ru",
-  //   password: "124Maks",
-  //   confirmPassword: "124Maks",
-  // };
-
   const result = signUpFormSchema.safeParse(req.body);
 
   if (!result.success) {
@@ -120,6 +116,28 @@ app.post("/signup", async (req, resp) => {
   }
 });
 
+const checkAuth=(req,resp,next)=>{
+if (!req.headers.authorization) {
+return resp.status(401).json({error:"Token is not found"})
+}
+// next();
+  const token=req.headers.authorization.split(" ")[1];
+  if (token==="undefined") {
+    return resp.status(401).json({error:"Token is not found"})
+  }
+jwt.verify(token,jwtSecret,(err,user)=>{
+  if (err) {
+    return resp.status(401).json({error:"invalid token"})
+  }
+  else{
+   next();
+  }
+})
+}
+app.get("/protected",checkAuth, async(req,resp)=>{
+console.log(2);
+
+})
 app.listen(4000, () => {
   console.log("server open");
 }); //указываем на каком порте будет работать сервер
