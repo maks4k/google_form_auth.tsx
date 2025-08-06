@@ -5,10 +5,11 @@ import type { ValidationFormfieldsTypes } from "../types";
 import type { z } from "zod";
 import type { signinFormSchema, signUpFormSchema } from "./formSchema";
 import { authApi } from "@/entites/user";
-import * as Cookies from "js-cookie";
+// import * as Cookies from "js-cookie";
 import { ROUTES } from "@/shared/router/constants";
 import type { AxiosError } from "axios";
 import { toast } from "sonner";
+import Cookies from "js-cookie";
 
 
 export const useAuth = (ROUTES_VALUE:`${RouteNames}`) => {
@@ -22,10 +23,11 @@ export const useAuth = (ROUTES_VALUE:`${RouteNames}`) => {
       if (!resp.data.token) {
         throw new Error("Token not found");
       }
-      Cookies.default.set("token", resp.data.token, {
+      Cookies.set("token", resp.data.token, {
         expires: 1 / 24,
       });
-
+      console.log("nav");
+      
       navigate(ROUTES.HOME);
     } catch (err) {
      const error = err as AxiosError<{
