@@ -58,7 +58,7 @@ app.get("/", (req, resp) => {
   });
 });
 
-app.post("/signin", async (req, resp) => {
+app.post("/api/signin", async (req, resp) => {
   const result = signinFormSchema.safeParse(req.body);
 
   if (!result.success) {
@@ -86,7 +86,7 @@ app.post("/signin", async (req, resp) => {
   }
 });
 
-app.post("/signup", async (req, resp) => {
+app.post("/api/signup", async (req, resp) => {
   const result = signUpFormSchema.safeParse(req.body);
 
   if (!result.success) {
@@ -139,8 +139,9 @@ const checkAuth = (req, resp, next) => {
     }
   });
 };
-app.get("/protected", checkAuth, async (req, resp) => {
+app.get("/api/protected", checkAuth, async (req, resp) => {
   console.log(2);
+  return resp.status(200).json({message:"ok"})
 });
 app.listen(4000, () => {
   console.log("server open");

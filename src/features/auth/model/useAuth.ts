@@ -28,7 +28,8 @@ export const useAuth = (ROUTES_VALUE:`${RouteNames}`) => {
       });
       console.log("nav");
       
-      navigate(ROUTES.HOME);
+      // navigate(ROUTES.HOME);
+      location.replace("/")
     } catch (err) {
      const error = err as AxiosError<{
         error: string | ValidationFormfieldsTypes;

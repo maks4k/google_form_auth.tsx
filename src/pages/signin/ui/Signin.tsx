@@ -1,14 +1,8 @@
-import { authApi } from "@/entites/user/api/auth";
-import { SigninForm } from "@/features/auth";
-import { FormPageLayout } from "@/shared/ui/layouts/FormPageLayout";
-import { AxiosError } from "axios";
 
-export const Signin = () => {
-  // authApi
-  //   .signin({ email: "admin@mail.ru", password: "1234" })
-  //   .then((resp) => console.log(resp.data.message))
-  //   .catch((error: AxiosError<{ error: string }>) => {
-  //     console.log(error.response?.data.error);
-  //   });
+import { SigninForm, withCheckAuth } from "@/features/auth";
+import { FormPageLayout } from "@/shared/ui/layouts/FormPageLayout";
+
+
+export const Signin = withCheckAuth(() => {
   return <FormPageLayout title="Sign in" form={<SigninForm />} />;
-};
+});
