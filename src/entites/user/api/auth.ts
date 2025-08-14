@@ -1,7 +1,7 @@
-import { api } from "@/shared/api/axios-instance";
+import { api} from "@/shared/api/axios-instance";
 import type { IUser } from "../types";
 import { ROUTES } from "@/shared/api/constants";
-import Cookies from "js-cookie";
+
 
 
 
@@ -21,9 +21,8 @@ signin:(data:IUserRequest)=>
 api.post<IUserResponse>(ROUTES.SIGNIN,data),
 signup:(data:IUserRequest)=>
 api.post<IUserResponse>(ROUTES.SIGNUP,data),
-protected:()=>api.get(ROUTES.PROTECTED,{
-headers:{
-Authorization:`Bearer ${Cookies.get("token")}`
-}})
+protected:()=>api.get<{user:IUserData}>(ROUTES.PROTECTED)
+
+
 }
 

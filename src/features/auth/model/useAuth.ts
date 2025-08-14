@@ -20,16 +20,16 @@ export const useAuth = (ROUTES_VALUE:`${RouteNames}`) => {
   const authHandler = async (data: z.infer<typeof signinFormSchema>| z.infer<typeof signUpFormSchema>) => {
     try {
       const resp = await authApi[ROUTES_VALUE](data);
-      if (!resp.data.token) {
-        throw new Error("Token not found");
-      }
-      Cookies.set("token", resp.data.token, {
-        expires: 1 / 24,
-      });
-      console.log("nav");
+      // if (!resp.data.token) {
+      //   throw new Error("Token not found");
+      // }
+      // Cookies.set("token", resp.data.token, {
+      //   expires: 1 / 24,
+      // });куки на клиенте ,от них избавились ,что бы сервер устанавливал куки
+      // console.log("nav");
       
-      // navigate(ROUTES.HOME);
-      location.replace("/")
+      navigate(ROUTES.HOME);
+      // location.replace("/")
     } catch (err) {
      const error = err as AxiosError<{
         error: string | ValidationFormfieldsTypes;
